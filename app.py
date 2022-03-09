@@ -1,7 +1,8 @@
 from flask import Flask, request, redirect, render_template, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from models import Cupcake, db, connect_db
-# from forms import AnimalForm
+# from forms import CupcakeForm
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///cupcakes"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -33,7 +34,7 @@ def create_cupcake():
         image=data['image'] or None)
     db.session.add(new_cupcake)
     db.session.commit()
-    response_json = jsonify(cupcake=new_cupcake.to_dict())
+    response_json = jsonify(cupcake=new_cupcake.serialize())
     return (response_json, 201)
 
 @app.route('/api/cupcakes/<int:id>')
@@ -62,7 +63,7 @@ def update_cupcake(cupcake_id):
     db.session.add(cupcake)
     db.session.commit()
 
-    return jsonify(cupcake=cupcake.to_dict())
+    return jsonify(cupcake=cupcake.serialize())
 
 
 @app.route("/api/cupcakes/<int:cupcake_id>", methods=["DELETE"])
